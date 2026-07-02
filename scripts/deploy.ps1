@@ -1,11 +1,13 @@
-# Pull, install, migrate, build, and restart chitko on a Windows server.
+# Pull, install, migrate, build, and (re)start chitko on a Windows server.
 # For Linux, use scripts/deploy.sh instead.
 #
-# Restart step: Windows has no systemd, so this just runs whatever command
-# you use to manage the running process (pm2, NSSM, a scheduled task, etc).
-# Override it with -RestartCommand, e.g.:
+# Start/restart step: if you manage the process with pm2, NSSM, a scheduled
+# task, etc, pass -RestartCommand and this script will run that instead,
+# e.g.:
 #   .\scripts\deploy.ps1 -RestartCommand "pm2 restart chitko"
-# Leave it unset to skip the restart step and do it yourself.
+# Otherwise (default) this script starts "npm start" itself as a detached
+# background process, stopping any previous instance it started (tracked
+# via .chitko.pid). Logs go to chitko.log in the repo root.
 
 param(
 	[string]$RestartCommand = ""
@@ -34,7 +36,27 @@ if ($RestartCommand -ne "") {
 	Write-Host "==> restarting service"
 	Invoke-Expression $RestartCommand
 } else {
-	Write-Host "==> skipping restart (no -RestartCommand given) - restart the app process yourself"
+	$pidFile = ".chitko.pid"
+
+	if (Test-Path $pidFile) {
+		$oldPid = Get-Content $pidFile
+		$oldProcess = Get-Process -Id $oldPid -ErrorAction SilentlyContinue
+		if ($oldProcess) {
+			Write-Host "==> stopping previous instance (pid $oldPid)"
+			Stop-Process -Id $oldPid -Force
+		}
+		Remove-Item $pidFile
+	}
+
+	Write-Host "==> starting app (npm start)"
+	# Start-Process needs the real executable, not "npm" - on Windows npm is
+	# a .cmd shim, and Start-Process (unlike normal invocation) does not
+	# resolve PATHEXT the way the shell does.
+	$npmPath = (Get-Command npm).Source
+	$process = Start-Process $npmPath -ArgumentList "start" -NoNewWindow -PassThru `
+		-RedirectStandardOutput "chitko.log" -RedirectStandardError "chitko.err.log"
+	$process.Id | Out-File -FilePath $pidFile -Encoding ascii
+	Write-Host "==> started (pid $($process.Id)), logs: chitko.log / chitko.err.log"
 }
 
 Write-Host "==> done"

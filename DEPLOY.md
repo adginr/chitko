@@ -61,17 +61,18 @@ switching).
    ```
 5. Run it:
    ```powershell
-   node build
+   npm start
    ```
-   Windows has no systemd equivalent built in — to keep it running across
-   reboots/crashes, wrap it with [pm2](https://pm2.keymetrics.io/) or
-   [NSSM](https://nssm.cc/) rather than running `node build` in a raw
-   terminal.
+   (equivalent to `node build`). `.\scripts\deploy.ps1` runs this for you
+   automatically as a detached background process on every deploy — see
+   Updating below. For surviving reboots/crashes long-term, wrap it with
+   [pm2](https://pm2.keymetrics.io/) or [NSSM](https://nssm.cc/) instead and
+   pass `-RestartCommand` to the deploy script.
 6. Access over the network requires `HOST`/`PORT` env vars or `--host`/
    `--port` flags to `npm run preview` (for previewing a build) — remember
-   the `--` separator: `npm run preview -- --host 0.0.0.0 --port 8085`.
-   `node build` itself listens on `PORT` (default 3000) and `HOST`
-   (default `0.0.0.0`) env vars, no flags needed.
+   the `--` separator, or just use `npm run preview:lan` (binds
+   `0.0.0.0:8085`). `npm start` itself listens on `PORT` (default 3000) and
+   `HOST` (default `0.0.0.0`) env vars, no flags needed.
 
 ## Updating
 
@@ -85,11 +86,15 @@ DEPLOY_RESTART_CMD="pm2 restart chitko" ./scripts/deploy.sh
 Windows:
 ```powershell
 .\scripts\deploy.ps1
-# or, to also restart automatically:
+# or, if you manage the process with pm2/NSSM/a scheduled task instead:
 .\scripts\deploy.ps1 -RestartCommand "pm2 restart chitko"
 ```
 
-Both pull, run `npm ci`, apply any new migrations, and rebuild.
+Both pull, run `npm ci`, apply any new migrations, and rebuild. `deploy.sh`
+then restarts the systemd service; `deploy.ps1` (with no `-RestartCommand`)
+stops whichever instance it previously started and launches a new detached
+`npm start`, tracked via `.chitko.pid`, logging to `chitko.log` /
+`chitko.err.log` in the repo root.
 
 ## Schema changes
 
