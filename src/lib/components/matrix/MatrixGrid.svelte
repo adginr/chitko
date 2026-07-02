@@ -7,7 +7,7 @@
 	const matrix = getContext<MatrixStateType>('matrix');
 
 	let gridEl: HTMLDivElement | undefined = $state();
-	let dragMode: 'col' | 'row' | null = $state(null);
+	let dragMode: 'col' | 'row' | 'both' | null = $state(null);
 
 	function startColDrag(event: PointerEvent) {
 		event.preventDefault();
@@ -19,6 +19,11 @@
 		dragMode = 'row';
 	}
 
+	function startBothDrag(event: PointerEvent) {
+		event.preventDefault();
+		dragMode = 'both';
+	}
+
 	$effect(() => {
 		if (!dragMode) return;
 
@@ -26,9 +31,10 @@
 			if (!gridEl) return;
 			const rect = gridEl.getBoundingClientRect();
 
-			if (dragMode === 'col') {
+			if (dragMode === 'col' || dragMode === 'both') {
 				matrix.colSplit = clampSplit(((event.clientX - rect.left) / rect.width) * 100);
-			} else if (dragMode === 'row') {
+			}
+			if (dragMode === 'row' || dragMode === 'both') {
 				matrix.rowSplit = clampSplit(((event.clientY - rect.top) / rect.height) * 100);
 			}
 		}
@@ -73,10 +79,17 @@
 		onpointerdown={startRowDrag}
 	></button>
 
-	<div
-		class="bg-eh-text-mutedest pointer-events-none absolute z-20 h-1.5 w-1.5 rounded-full"
-		style="left: calc({matrix.colSplit}% - 3px); top: calc({matrix.rowSplit}% - 3px);"
-	></div>
+	<button
+		type="button"
+		aria-label="Змінити пропорції по обох осях"
+		class="group absolute z-20 flex h-5 w-5 cursor-move items-center justify-center border-0 bg-transparent p-0"
+		style="left: calc({matrix.colSplit}% - 10px); top: calc({matrix.rowSplit}% - 10px);"
+		onpointerdown={startBothDrag}
+	>
+		<span
+			class="bg-eh-text-mutedest group-hover:bg-eh-text-muted h-1.5 w-1.5 rounded-full transition-[background-color,transform] group-hover:scale-150"
+		></span>
+	</button>
 
 	<div
 		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
