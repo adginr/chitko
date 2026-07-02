@@ -91,11 +91,12 @@
 	ondrop={onDrop}
 >
 	{#if tasks.length === 0 && matrix.addingTo !== quadrantId}
-		<div
-			class="text-eh-text-mutedest flex flex-1 items-center justify-center border border-dashed border-current text-center text-sm"
-			style="border-radius: 10px;"
-		>
-			Перетягніть сюди завдання
+		<div class="flex flex-1 items-center justify-center">
+			<span
+				class="text-3xl leading-none"
+				style="color: oklch(0.72 0.09 {meta.hue}); opacity: {meta.opacity};"
+				aria-hidden="true">{meta.arrow}</span
+			>
 		</div>
 	{:else}
 		<div class="flex flex-col gap-1">

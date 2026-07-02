@@ -56,7 +56,7 @@
 				aria-label={matrix.focusMode ? 'Вимкнути режим фокусу' : 'Увімкнути режим фокусу'}
 				onclick={toggleFocusMode}
 			>
-				{matrix.focusMode ? '★' : '☆'}
+				{matrix.focusMode ? '◎' : '○'}
 			</button>
 			<div class="relative">
 				<button

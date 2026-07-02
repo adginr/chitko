@@ -33,7 +33,9 @@
 	}
 
 	function formatUpdatedAt(date: Date): string {
-		return `Змінено ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+		const d = `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${pad(date.getFullYear() % 100)}`;
+		const t = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+		return `${d} ${t}`;
 	}
 
 	function scheduleSave() {
