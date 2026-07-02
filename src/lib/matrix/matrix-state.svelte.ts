@@ -56,7 +56,11 @@ class MatrixState {
 		if (!trimmed) return;
 
 		const optimistic: Task = {
-			id: `optimistic-${crypto.randomUUID()}`,
+			// crypto.randomUUID() requires a secure context (HTTPS or localhost)
+			// and is unavailable over plain http:// on a LAN IP — this id is only
+			// a temporary client-side placeholder until the server assigns the
+			// real one, so it doesn't need cryptographic randomness.
+			id: `optimistic-${Date.now()}-${Math.random().toString(36).slice(2)}`,
 			title: trimmed,
 			quadrant,
 			position: Date.now(),

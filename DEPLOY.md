@@ -67,6 +67,29 @@ git push
 Then run `./scripts/deploy.sh` on the server as usual — it picks up the new
 migration automatically. (`db:push` is still fine for local dev iteration.)
 
+## Troubleshooting: "minimumReleaseAge" / supply-chain policy error
+
+If `pnpm install` fails with something like:
+
+```
+The lockfile contains entries that the active policies reject...
+was published at ..., within the minimumReleaseAge cutoff (...)
+```
+
+your pnpm has a built-in policy that refuses to install packages published
+very recently (a guard against just-published/compromised versions). It
+can't be fixed by anything committed to this repo — pnpm deliberately
+ignores that setting when it comes from a project-local `.npmrc`, so a
+cloned repo can't ship a file that silently disables it.
+
+Two options on the affected machine:
+- **Wait a day or two** and re-run `pnpm install` — once the pinned
+  versions age past the policy's window, it passes with no changes needed.
+- **Override it for this one install**:
+  ```bash
+  pnpm install --config.minimum-release-age=0
+  ```
+
 ## Backups
 
 `local.db` is not tracked by git. Back it up separately, e.g.:
