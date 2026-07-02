@@ -8,8 +8,12 @@ import {
 	deleteTask,
 	updateNotes
 } from '$lib/remote/tasks.remote';
+import { browser } from '$app/environment';
 import { QUADRANTS, type Quadrant } from '$lib/matrix/quadrants';
+import { clampSplit } from '$lib/matrix/layout';
 import type { Task } from '$lib/server/db/schema';
+
+const SPLIT_STORAGE_KEY = 'chitko:matrix-split';
 
 /**
  * Per-request reactive state for the Eisenhower matrix. Must be created fresh
@@ -33,6 +37,30 @@ class MatrixState {
 	addPickerOpen = $state(false);
 	colSplit = $state(50);
 	rowSplit = $state(50);
+
+	constructor() {
+		if (!browser) return;
+
+		// Читання збереженого стану resize
+		try {
+			const raw = localStorage.getItem(SPLIT_STORAGE_KEY);
+			if (raw) {
+				const saved = JSON.parse(raw) as { colSplit?: number; rowSplit?: number };
+				if (typeof saved.colSplit === 'number') this.colSplit = clampSplit(saved.colSplit);
+				if (typeof saved.rowSplit === 'number') this.rowSplit = clampSplit(saved.rowSplit);
+			}
+		} catch {
+			// зіпсований запис — ігноруємо, лишаємо дефолт 50/50
+		}
+
+		// Реактивний запис при кожній зміні split
+		$effect(() => {
+			localStorage.setItem(
+				SPLIT_STORAGE_KEY,
+				JSON.stringify({ colSplit: this.colSplit, rowSplit: this.rowSplit })
+			);
+		});
+	}
 
 	tasks = $derived(this.#tasksQuery.current ?? []);
 
