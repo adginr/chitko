@@ -34,7 +34,7 @@ if ($RestartCommand -ne "") {
 	Write-Host "==> restarting service"
 	Invoke-Expression $RestartCommand
 } else {
-	Write-Host "==> skipping restart (no -RestartCommand given) — restart the app process yourself"
+	Write-Host "==> skipping restart (no -RestartCommand given) - restart the app process yourself"
 }
 
 Write-Host "==> done"
