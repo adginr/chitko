@@ -90,7 +90,7 @@
 	ondragleave={onDragLeave}
 	ondrop={onDrop}
 >
-	{#if tasks.length === 0}
+	{#if tasks.length === 0 && matrix.addingTo !== quadrantId}
 		<div
 			class="text-eh-text-mutedest flex flex-1 items-center justify-center border border-dashed border-current text-center text-sm"
 			style="border-radius: 10px;"

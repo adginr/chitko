@@ -23,6 +23,8 @@
 
 	--color-eh-star: oklch(0.6 0.13 80);
 	--color-eh-danger: oklch(0.55 0.16 25);
+	--color-eh-focus: oklch(0.5 0.18 300);
+	--color-eh-done: oklch(0.5 0.14 145);
 }
 
 html,

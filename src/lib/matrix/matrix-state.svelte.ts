@@ -176,7 +176,7 @@ class MatrixState {
 		try {
 			await updateNotes({ id, notes }).updates(
 				this.#tasksQuery.withOverride((current) =>
-					current.map((t) => (t.id === id ? { ...t, notes } : t))
+					current.map((t) => (t.id === id ? { ...t, notes, updatedAt: new Date() } : t))
 				)
 			);
 		} catch {

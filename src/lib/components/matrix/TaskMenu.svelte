@@ -67,33 +67,51 @@
 			onclick={() => moveTo(quadrant)}
 		>
 			<span>{QUADRANT_META[quadrant].arrow}</span>
-			<span>{QUADRANT_META[quadrant].label}</span>
+			<span>{QUADRANT_META[quadrant].verb}</span>
 		</button>
 	{/each}
 
 	<div class="bg-eh-grid my-1 h-px w-full"></div>
 
-	<button type="button" class="hover:bg-eh-grid w-full px-3 py-1.5 text-left" onclick={toggleFocus}>
-		{task.starred ? 'Прибрати з фокусу' : 'У фокус'}
+	<button
+		type="button"
+		class="hover:bg-eh-grid flex w-full items-center gap-2 px-3 py-1.5 text-left {task.starred
+			? 'text-eh-text-muted'
+			: 'text-eh-focus'}"
+		onclick={toggleFocus}
+	>
+		<span>{task.starred ? '○' : '◎'}</span>
+		<span>{task.starred ? 'Прибрати' : 'Фокус'}</span>
 	</button>
 
 	<button
 		type="button"
-		class="hover:bg-eh-grid w-full px-3 py-1.5 text-left"
+		class="hover:bg-eh-grid flex w-full items-center gap-2 px-3 py-1.5 text-left {task.done
+			? 'text-eh-text-muted'
+			: 'text-eh-done'}"
 		onclick={toggleComplete}
 	>
-		Позначити виконаним
+		<span>{task.done ? '↺' : '✓'}</span>
+		<span>{task.done ? 'Активна' : 'Готово'}</span>
 	</button>
 
-	<button type="button" class="hover:bg-eh-grid w-full px-3 py-1.5 text-left" onclick={edit}>
-		Редагувати
+	<div class="bg-eh-grid my-1 h-px w-full"></div>
+
+	<button
+		type="button"
+		class="hover:bg-eh-grid flex w-full items-center gap-2 px-3 py-1.5 text-left"
+		onclick={edit}
+	>
+		<span>✎</span>
+		<span>Редагувати</span>
 	</button>
 
 	<button
 		type="button"
-		class="text-eh-danger hover:bg-eh-grid w-full px-3 py-1.5 text-left"
+		class="text-eh-danger hover:bg-eh-grid flex w-full items-center gap-2 px-3 py-1.5 text-left"
 		onclick={remove}
 	>
-		Видалити
+		<span>✕</span>
+		<span>Видалити</span>
 	</button>
 </div>

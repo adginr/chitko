@@ -77,4 +77,29 @@
 		class="bg-eh-text-mutedest pointer-events-none absolute z-20 h-1.5 w-1.5 rounded-full"
 		style="left: calc({matrix.colSplit}% - 3px); top: calc({matrix.rowSplit}% - 3px);"
 	></div>
+
+	<div
+		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
+		style="top: {matrix.rowSplit / 2}%; left: {matrix.colSplit}%; transform: translate(-50%, -50%) rotate(-90deg);"
+	>
+		важливо
+	</div>
+	<div
+		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
+		style="top: {(100 + matrix.rowSplit) / 2}%; left: {matrix.colSplit}%; transform: translate(-50%, -50%) rotate(-90deg);"
+	>
+		не важливо
+	</div>
+	<div
+		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
+		style="top: {matrix.rowSplit}%; left: {matrix.colSplit / 2}%; transform: translate(-50%, -50%);"
+	>
+		терміново
+	</div>
+	<div
+		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
+		style="top: {matrix.rowSplit}%; left: {(100 + matrix.colSplit) / 2}%; transform: translate(-50%, -50%);"
+	>
+		не терміново
+	</div>
 </div>
