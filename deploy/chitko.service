@@ -1,0 +1,17 @@
+[Unit]
+Description=chitko (Eisenhower matrix task board)
+After=network.target
+
+[Service]
+Type=simple
+User=REPLACE_WITH_DEPLOY_USER
+WorkingDirectory=REPLACE_WITH_ABSOLUTE_PATH_TO_REPO
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=DATABASE_URL=local.db
+ExecStart=/usr/bin/env node build
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
