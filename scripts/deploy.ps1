@@ -48,12 +48,16 @@ if ($RestartCommand -ne "") {
 		Remove-Item $pidFile
 	}
 
-	Write-Host "==> starting app (npm start)"
-	# Start-Process needs the real executable, not "npm" - on Windows npm is
-	# a .cmd shim, and Start-Process (unlike normal invocation) does not
-	# resolve PATHEXT the way the shell does.
-	$npmPath = (Get-Command npm).Source
-	$process = Start-Process $npmPath -ArgumentList "start" -NoNewWindow -PassThru `
+	Write-Host "==> starting app (node build)"
+	# Launch node directly rather than the "npm" shim. With -RedirectStandard*,
+	# Start-Process uses CreateProcess (not ShellExecute), which cannot run
+	# npm.cmd (a batch file) and fails with "%1 is not a valid Win32
+	# application". "npm start" is just "node build" (adapter-node output), so
+	# this is equivalent — and node.exe is a real executable that works with
+	# redirection, giving us the server's actual PID for the stop/restart logic
+	# (routing through cmd.exe would only give us cmd's PID, orphaning node).
+	$nodePath = (Get-Command node).Source
+	$process = Start-Process $nodePath -ArgumentList "build" -NoNewWindow -PassThru `
 		-RedirectStandardOutput "chitko.log" -RedirectStandardError "chitko.err.log"
 	$process.Id | Out-File -FilePath $pidFile -Encoding ascii
 	Write-Host "==> started (pid $($process.Id)), logs: chitko.log / chitko.err.log"
