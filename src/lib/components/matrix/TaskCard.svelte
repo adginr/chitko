@@ -13,6 +13,9 @@
 	const isDragging = $derived(matrix.dragTaskId === task.id);
 	const isEditing = $derived(matrix.editingId === task.id);
 	const isMenuOpen = $derived(matrix.openMenuFor === task.id);
+	const project = $derived(matrix.projectById(task.projectId));
+	// Focus mode declutters the grid: everything not starred fades right back.
+	const dimmed = $derived(matrix.focusMode && !task.starred);
 
 	$effect(() => {
 		if (isEditing) editBuffer = task.title;
@@ -25,7 +28,7 @@
 
 	function openNotes(event: MouseEvent) {
 		event.stopPropagation();
-		matrix.modalTaskId = task.id;
+		matrix.modalTarget = { kind: 'task', id: task.id };
 	}
 
 	function commitEdit() {
@@ -64,7 +67,7 @@
 
 <div
 	class="flex items-center gap-1.5 px-1 py-1 text-sm font-normal"
-	style="opacity: {isDragging ? 0.35 : 1};"
+	style="opacity: {isDragging ? 0.35 : dimmed ? 0.1 : 1}; transition: opacity 150ms ease;"
 	role="listitem"
 	draggable="true"
 	ondragstart={onDragStart}
@@ -100,6 +103,16 @@
 		>
 			{task.title}
 		</button>
+	{/if}
+
+	{#if project}
+		<span
+			class="max-w-[100px] shrink-0 truncate rounded-[10px] px-1.5 py-0.5 text-[10px]"
+			style="color: var(--color-eh-tag-text); background: var(--color-eh-tag-bg);"
+			title={project.title}
+		>
+			{project.title}
+		</span>
 	{/if}
 
 	{#if task.starred}

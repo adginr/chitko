@@ -16,6 +16,7 @@
 			// Дублює ключ/кламп із matrix-state.svelte.ts та layout.ts навмисно —
 			// має відпрацювати синхронно в <head>, без імпортів.
 			(function () {
+				var el = document.documentElement;
 				try {
 					var c = 50,
 						r = 50;
@@ -25,11 +26,18 @@
 						if (typeof s.colSplit === 'number') c = Math.min(80, Math.max(20, s.colSplit));
 						if (typeof s.rowSplit === 'number') r = Math.min(80, Math.max(20, s.rowSplit));
 					}
-					var el = document.documentElement;
 					el.style.setProperty('--eh-col-split', c + '%');
 					el.style.setProperty('--eh-row-split', r + '%');
 				} catch (e) {
 					/* приватний режим/зіпсований запис — лишаємо дефолт */
+				}
+				try {
+					var collapsed = false;
+					var lraw = localStorage.getItem('chitko:layout');
+					if (lraw) collapsed = JSON.parse(lraw).sidebarCollapsed === true;
+					el.style.setProperty('--eh-sidebar-width', collapsed ? '30px' : '150px');
+				} catch (e) {
+					el.style.setProperty('--eh-sidebar-width', '150px');
 				}
 			})();
 		</script>

@@ -25,6 +25,17 @@
 	--color-eh-danger: oklch(0.55 0.16 25);
 	--color-eh-focus: oklch(0.5 0.18 300);
 	--color-eh-done: oklch(0.5 0.14 145);
+
+	/* Sidebar + level accents */
+	--color-eh-active: oklch(0.995 0.002 80);
+	--color-eh-hover: oklch(0.94 0.006 80);
+	--color-eh-divider: oklch(0.84 0.006 80);
+	--color-eh-outline: oklch(0.78 0.006 80);
+	--color-eh-tactic: oklch(0.3 0.01 80);
+
+	/* Project-tag chip */
+	--color-eh-tag-text: oklch(0.42 0.12 250);
+	--color-eh-tag-bg: oklch(0.94 0.03 250);
 }
 
 html,

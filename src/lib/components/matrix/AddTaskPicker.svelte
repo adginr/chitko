@@ -25,7 +25,8 @@
 
 <div
 	bind:this={panelEl}
-	class="bg-white text-eh-text absolute bottom-full left-0 z-30 mb-1 min-w-[176px] py-1 text-[13px] shadow-lg"
+	class="bg-white text-eh-text absolute top-full right-0 z-30 mt-1 min-w-[176px] py-1 text-[13px] shadow-lg"
+	style="box-shadow: 0 2px 8px oklch(0 0 0 / 0.15);"
 >
 	{#each QUADRANTS as quadrant (quadrant)}
 		<button

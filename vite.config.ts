@@ -4,6 +4,9 @@ import adapter from '@sveltejs/adapter-node';
 import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
+	// Honor a PORT env var when set (e.g. by the preview harness) so the dev
+	// server binds where the launcher expects; falls back to Vite's default.
+	server: process.env.PORT ? { port: Number(process.env.PORT), strictPort: false } : undefined,
 	plugins: [
 		tailwindcss(),
 		sveltekit({

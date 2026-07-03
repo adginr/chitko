@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import { query, command } from '$app/server';
 import { db } from '$lib/server/db';
 import * as tasks from '$lib/server/db/tasks';
+import * as projects from '$lib/server/db/projects';
 import { QUADRANTS, type Quadrant } from '$lib/server/db/schema';
 
 function assertQuadrant(value: unknown): asserts value is Quadrant {
@@ -58,3 +59,15 @@ export const updateNotes = command('unchecked', async (input: { id: string; note
 	await tasks.updateNotes(db, input);
 	void listTasks().refresh();
 });
+
+export const assignProject = command(
+	'unchecked',
+	async (input: { id: string; projectId: string | null }) => {
+		if (input.projectId !== null) {
+			const known = await projects.listProjects(db);
+			if (!known.some((p) => p.id === input.projectId)) error(400, 'Unknown project');
+		}
+		await tasks.assignProject(db, input);
+		void listTasks().refresh();
+	}
+);

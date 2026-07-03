@@ -5,26 +5,49 @@
 
 	const matrix = getContext<MatrixStateType>('matrix');
 
-	const task = $derived(matrix.tasks.find((t) => t.id === matrix.modalTaskId) ?? null);
+	// The modal is shared by tasks, projects and vision items — all of which
+	// expose { id, title, notes, updatedAt }. Resolve the active item by kind.
+	const target = $derived(matrix.modalTarget);
+	const item = $derived.by(() => {
+		const t = matrix.modalTarget;
+		if (!t) return null;
+		if (t.kind === 'task') return matrix.tasks.find((x) => x.id === t.id) ?? null;
+		if (t.kind === 'project') return matrix.projects.find((x) => x.id === t.id) ?? null;
+		return matrix.visions.find((x) => x.id === t.id) ?? null;
+	});
+
+	function saveItemNotes(id: string, notes: string) {
+		const kind = target?.kind;
+		if (kind === 'project') matrix.saveProjectNotes(id, notes);
+		else if (kind === 'vision') matrix.saveVisionNotes(id, notes);
+		else matrix.saveNotes(id, notes);
+	}
+
+	function renameItem(id: string, title: string) {
+		const kind = target?.kind;
+		if (kind === 'project') matrix.renameProject(id, title);
+		else if (kind === 'vision') matrix.renameVision(id, title);
+		else matrix.rename(id, title);
+	}
 
 	let titleBuffer = $state('');
 	let noteBuffer = $state('');
 	let previewing = $state(false);
 	let saveStatus = $state<'saved' | 'saving'>('saved');
 	let panelEl: HTMLDivElement | undefined = $state();
-	let lastTaskId: string | null = null;
+	let lastId: string | null = null;
 	let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
-		if (task && task.id !== lastTaskId) {
+		if (item && item.id !== lastId) {
 			clearTimeout(saveTimer);
-			titleBuffer = task.title;
-			noteBuffer = task.notes;
+			titleBuffer = item.title;
+			noteBuffer = item.notes;
 			previewing = false;
 			saveStatus = 'saved';
-			lastTaskId = task.id;
-		} else if (!task) {
-			lastTaskId = null;
+			lastId = item.id;
+		} else if (!item) {
+			lastId = null;
 		}
 	});
 
@@ -39,18 +62,18 @@
 	}
 
 	function scheduleSave() {
-		if (!task) return;
-		const id = task.id;
+		if (!item) return;
+		const id = item.id;
 		saveStatus = 'saving';
 		clearTimeout(saveTimer);
 		saveTimer = setTimeout(() => {
-			matrix.saveNotes(id, noteBuffer);
+			saveItemNotes(id, noteBuffer);
 			saveStatus = 'saved';
 		}, 500);
 	}
 
 	$effect(() => {
-		if (!task) return;
+		if (!item) return;
 
 		function onWindowClick(event: MouseEvent) {
 			if (panelEl && event.target instanceof Node && panelEl.contains(event.target)) return;
@@ -64,9 +87,9 @@
 	const previewHtml = $derived(marked.parse(noteBuffer, { async: false }));
 
 	function commitTitle() {
-		if (!task) return;
+		if (!item) return;
 		const title = titleBuffer.trim();
-		if (title && title !== task.title) matrix.rename(task.id, title);
+		if (title && title !== item.title) renameItem(item.id, title);
 	}
 
 	function onTitleKeydown(event: KeyboardEvent) {
@@ -78,15 +101,15 @@
 
 	function closeModal() {
 		clearTimeout(saveTimer);
-		if (task) {
+		if (item) {
 			commitTitle();
-			matrix.saveNotes(task.id, noteBuffer);
+			saveItemNotes(item.id, noteBuffer);
 		}
-		matrix.modalTaskId = null;
+		matrix.modalTarget = null;
 	}
 </script>
 
-{#if task}
+{#if item}
 	<div
 		class="fixed inset-0 z-40 flex items-center justify-center"
 		style="background-color: oklch(0 0 0 / 0.35);"
@@ -139,7 +162,7 @@
 			<div
 				class="text-eh-text-mutedest pointer-events-none absolute right-3.5 bottom-2.5 flex items-center gap-1.5 text-[11px]"
 			>
-				<span>{formatUpdatedAt(task.updatedAt)}</span>
+				<span>{formatUpdatedAt(item.updatedAt)}</span>
 				{#if saveStatus === 'saving'}
 					<svg
 						width="15"
@@ -168,7 +191,8 @@
 						stroke-linejoin="round"
 						aria-label="Збережено"
 					>
-						<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+						<path
+							d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
 						></path>
 						<path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
 						<path d="M7 3v4a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V3.4"></path>

@@ -23,7 +23,8 @@
 
 <div
 	bind:this={panelEl}
-	class="bg-white text-eh-text absolute right-0 bottom-full z-30 mb-1 min-w-[200px] py-1 text-[13px] shadow-lg"
+	class="bg-white text-eh-text absolute top-0 left-full z-30 ml-1 min-w-[200px] py-1 text-[13px] shadow-lg"
+	style="box-shadow: 0 2px 8px oklch(0 0 0 / 0.15);"
 >
 	{#if matrix.starredTasks.length === 0}
 		<p class="text-eh-text-mutedest px-3 py-1.5">Немає завдань у фокусі</p>

@@ -26,6 +26,12 @@
 		close();
 	}
 
+	function setProject(projectId: string) {
+		// Clicking the currently-assigned project un-assigns it.
+		matrix.assignTaskProject(task.id, task.projectId === projectId ? null : projectId);
+		close();
+	}
+
 	function toggleComplete() {
 		matrix.toggleComplete(task.id);
 		close();
@@ -72,6 +78,21 @@
 	{/each}
 
 	<div class="bg-eh-grid my-1 h-px w-full"></div>
+
+	{#if matrix.projects.length > 0}
+		<div class="text-eh-text-mutedest px-3 pt-0.5 pb-1 text-[11px]">Проєкт</div>
+		{#each matrix.projects as project (project.id)}
+			<button
+				type="button"
+				class="hover:bg-eh-grid flex w-full items-center gap-2 px-3 py-1.5 text-left"
+				onclick={() => setProject(project.id)}
+			>
+				<span style="color: var(--color-eh-q2);">{task.projectId === project.id ? '●' : '○'}</span>
+				<span class="truncate">{project.title}</span>
+			</button>
+		{/each}
+		<div class="bg-eh-grid my-1 h-px w-full"></div>
+	{/if}
 
 	<button
 		type="button"

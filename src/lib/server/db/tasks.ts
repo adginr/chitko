@@ -51,3 +51,10 @@ export async function deleteTask(db: Db, input: { id: string }): Promise<void> {
 export async function updateNotes(db: Db, input: { id: string; notes: string }): Promise<void> {
 	await db.update(task).set({ notes: input.notes }).where(eq(task.id, input.id));
 }
+
+export async function assignProject(
+	db: Db,
+	input: { id: string; projectId: string | null }
+): Promise<void> {
+	await db.update(task).set({ projectId: input.projectId }).where(eq(task.id, input.id));
+}

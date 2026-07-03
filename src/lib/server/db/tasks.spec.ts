@@ -24,6 +24,7 @@ function createTestDb() {
 			starred integer DEFAULT 0 NOT NULL,
 			done integer DEFAULT 0 NOT NULL,
 			notes text DEFAULT '' NOT NULL,
+			project_id text,
 			created_at integer NOT NULL,
 			updated_at integer NOT NULL
 		);
