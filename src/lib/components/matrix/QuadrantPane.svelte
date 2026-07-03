@@ -82,7 +82,7 @@
 </script>
 
 <div
-	class="bg-eh-card flex min-h-0 flex-col overflow-y-auto p-2"
+	class="bg-eh-card relative flex min-h-0 flex-col overflow-y-auto p-2"
 	style={paneStyle}
 	role="group"
 	aria-label={meta.label}
@@ -90,16 +90,14 @@
 	ondragleave={onDragLeave}
 	ondrop={onDrop}
 >
-	{#if tasks.length === 0 && matrix.addingTo !== quadrantId}
-		<div class="flex flex-1 items-center justify-center">
-			<span
-				class="text-3xl leading-none"
-				style="color: oklch(0.72 0.09 {meta.hue}); opacity: {meta.opacity};"
-				aria-hidden="true">{meta.arrow}</span
-			>
-		</div>
-	{:else}
-		<div class="flex flex-col gap-1">
+	<span
+		class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center text-3xl leading-none select-none"
+		style="color: oklch(0.72 0.09 {meta.hue}); opacity: {0.45 * meta.opacity};"
+		aria-hidden="true">{meta.arrow}</span
+	>
+
+	{#if tasks.length > 0}
+		<div class="relative z-10 flex flex-col gap-1">
 			{#each tasks as task (task.id)}
 				<TaskCard {task} />
 			{/each}
@@ -112,7 +110,7 @@
 			bind:value={newTitle}
 			type="text"
 			placeholder="нове завдання"
-			class="text-eh-text mt-1 w-full border-0 bg-transparent px-1 py-1 text-sm outline-none"
+			class="text-eh-text relative z-10 mt-1 w-full border-0 bg-transparent px-1 py-1 text-sm outline-none"
 			onkeydown={onAddKeydown}
 			onblur={onAddBlur}
 		/>
