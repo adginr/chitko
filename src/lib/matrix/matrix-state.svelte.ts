@@ -53,12 +53,17 @@ class MatrixState {
 			// зіпсований запис — ігноруємо, лишаємо дефолт 50/50
 		}
 
-		// Реактивний запис при кожній зміні split
+		// Реактивний запис при кожній зміні split — у localStorage і в CSS-змінні,
+		// з яких рендериться сітка (див. блокуючий скрипт у app.html, що задає їх
+		// до першого малювання, щоб не було стрибка з дефолтних 50/50).
 		$effect(() => {
 			localStorage.setItem(
 				SPLIT_STORAGE_KEY,
 				JSON.stringify({ colSplit: this.colSplit, rowSplit: this.rowSplit })
 			);
+			const root = document.documentElement;
+			root.style.setProperty('--eh-col-split', `${this.colSplit}%`);
+			root.style.setProperty('--eh-row-split', `${this.rowSplit}%`);
 		});
 	}
 

@@ -10,6 +10,29 @@
 			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
+		<script>
+			// Виставляємо збережені пропорції матриці ДО першого малювання,
+			// щоб уникнути стрибка з дефолтних 50/50 (SSR) на значення з localStorage.
+			// Дублює ключ/кламп із matrix-state.svelte.ts та layout.ts навмисно —
+			// має відпрацювати синхронно в <head>, без імпортів.
+			(function () {
+				try {
+					var c = 50,
+						r = 50;
+					var raw = localStorage.getItem('chitko:matrix-split');
+					if (raw) {
+						var s = JSON.parse(raw);
+						if (typeof s.colSplit === 'number') c = Math.min(80, Math.max(20, s.colSplit));
+						if (typeof s.rowSplit === 'number') r = Math.min(80, Math.max(20, s.rowSplit));
+					}
+					var el = document.documentElement;
+					el.style.setProperty('--eh-col-split', c + '%');
+					el.style.setProperty('--eh-row-split', r + '%');
+				} catch (e) {
+					/* приватний режим/зіпсований запис — лишаємо дефолт */
+				}
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

@@ -56,7 +56,7 @@
 <div
 	bind:this={gridEl}
 	class="bg-eh-grid relative grid h-full w-full gap-px"
-	style="grid-template-columns: {matrix.colSplit}% {100 - matrix.colSplit}%; grid-template-rows: {matrix.rowSplit}% {100 - matrix.rowSplit}%;"
+	style="grid-template-columns: var(--eh-col-split, 50%) calc(100% - var(--eh-col-split, 50%)); grid-template-rows: var(--eh-row-split, 50%) calc(100% - var(--eh-row-split, 50%));"
 >
 	<QuadrantPane quadrantId="q1" />
 	<QuadrantPane quadrantId="q2" />
@@ -67,7 +67,7 @@
 		type="button"
 		aria-label="Змінити ширину колонок"
 		class="absolute top-0 z-10 h-full w-[9px] cursor-col-resize border-0 bg-transparent p-0"
-		style="left: calc({matrix.colSplit}% - 4.5px);"
+		style="left: calc(var(--eh-col-split, 50%) - 4.5px);"
 		onpointerdown={startColDrag}
 	></button>
 
@@ -75,7 +75,7 @@
 		type="button"
 		aria-label="Змінити висоту рядків"
 		class="absolute left-0 z-10 h-[9px] w-full cursor-row-resize border-0 bg-transparent p-0"
-		style="top: calc({matrix.rowSplit}% - 4.5px);"
+		style="top: calc(var(--eh-row-split, 50%) - 4.5px);"
 		onpointerdown={startRowDrag}
 	></button>
 
@@ -83,7 +83,7 @@
 		type="button"
 		aria-label="Змінити пропорції по обох осях"
 		class="group absolute z-20 flex h-5 w-5 cursor-move items-center justify-center border-0 bg-transparent p-0"
-		style="left: calc({matrix.colSplit}% - 10px); top: calc({matrix.rowSplit}% - 10px);"
+		style="left: calc(var(--eh-col-split, 50%) - 10px); top: calc(var(--eh-row-split, 50%) - 10px);"
 		onpointerdown={startBothDrag}
 	>
 		<span
@@ -93,25 +93,25 @@
 
 	<div
 		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
-		style="top: {matrix.rowSplit / 2}%; left: {matrix.colSplit}%; transform: translate(-50%, -50%) rotate(-90deg);"
+		style="top: calc(var(--eh-row-split, 50%) / 2); left: var(--eh-col-split, 50%); transform: translate(-50%, -50%) rotate(-90deg);"
 	>
 		важливо
 	</div>
 	<div
 		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
-		style="top: {(100 + matrix.rowSplit) / 2}%; left: {matrix.colSplit}%; transform: translate(-50%, -50%) rotate(-90deg);"
+		style="top: calc((100% + var(--eh-row-split, 50%)) / 2); left: var(--eh-col-split, 50%); transform: translate(-50%, -50%) rotate(-90deg);"
 	>
 		не важливо
 	</div>
 	<div
 		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
-		style="top: {matrix.rowSplit}%; left: {matrix.colSplit / 2}%; transform: translate(-50%, -50%);"
+		style="top: var(--eh-row-split, 50%); left: calc(var(--eh-col-split, 50%) / 2); transform: translate(-50%, -50%);"
 	>
 		терміново
 	</div>
 	<div
 		class="bg-eh-statusbar text-eh-text-muted pointer-events-none absolute z-2 px-2 py-0.5 text-[12px] whitespace-nowrap"
-		style="top: {matrix.rowSplit}%; left: {(100 + matrix.colSplit) / 2}%; transform: translate(-50%, -50%);"
+		style="top: var(--eh-row-split, 50%); left: calc((100% + var(--eh-col-split, 50%)) / 2); transform: translate(-50%, -50%);"
 	>
 		не терміново
 	</div>
